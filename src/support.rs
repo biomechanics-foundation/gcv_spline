@@ -1,7 +1,7 @@
 #[derive(Debug)]
 pub enum FittingError {
     NotEnoughKnotsForOrder(String),
-    WeightDiagonalMismatch(String),
+    VectorLengthMismatch(String),
     KnotsNotStrictlyIncreasing(String),
     InsufficientKnots(String),
 }
@@ -18,11 +18,11 @@ pub fn check_order(half_order: usize, num_knots: usize) -> Result<(), FittingErr
     Ok(())
 }
 
-pub fn check_weights_length(weights_diagonal: &Vec<f64>, num_knots: usize) -> Result<(), FittingError> {
+pub fn check_vector_length(weights_diagonal: &Vec<f64>, num_knots: usize) -> Result<(), FittingError> {
     if weights_diagonal.len() != num_knots {
-        return Err(FittingError::WeightDiagonalMismatch(
+        return Err(FittingError::VectorLengthMismatch(
             String::from(format!(
-                "Weights diagonal length {} must match number of knots, {}",
+                "Vector length {} must match number of knots, {}",
                 weights_diagonal.len(), num_knots
             ))
         ));

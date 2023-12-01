@@ -3,6 +3,8 @@ pub mod gcv_spline;
 mod basis;
 mod support;
 mod prep;
+mod bandet;
+mod bansol;
 
 #[cfg(test)]
 mod tests {

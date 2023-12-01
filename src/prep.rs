@@ -1,11 +1,11 @@
-use crate::support::{check_increasing, check_order, check_weights_length, FittingError};
+use crate::support::{check_increasing, check_order, check_vector_length, FittingError};
 
 pub fn create_weighted_matrix(half_order: usize, knots: &Vec<f64>, weights_diagonal: &Vec<f64>)
     -> Result<(Vec<f64>, f64), FittingError> {
     let num_knots = knots.len();
     check_increasing(knots)?;
     check_order(half_order, num_knots)?;
-    check_weights_length(weights_diagonal, num_knots)?;
+    check_vector_length(weights_diagonal, num_knots)?;
 
     let mut weighted_matrix = vec![0.0; ((2 * half_order) + 1) * num_knots];
 
@@ -82,7 +82,7 @@ pub fn create_weighted_matrix(half_order: usize, knots: &Vec<f64>, weights_diago
     let mut matrix_norm = 0.0;
     for outer in 1 ..= num_knots {
         let current_weight = weights_diagonal[outer - 1];
-        for outer in 1 ..= half_order * 2 + 1 {
+        for _inner in 1 ..= half_order * 2 + 1 {
             matrix_index += 1;
             weighted_matrix[matrix_index - 1] /= current_weight;
             matrix_norm += weighted_matrix[matrix_index - 1].abs();

@@ -1,4 +1,3 @@
-use std::cmp::{max, min};
 use crate::support::{check_increasing, check_order, FittingError};
 
 pub fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<Vec<f64>>, f64), FittingError> {
@@ -42,8 +41,8 @@ pub fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<Vec<f64>
                 }
             }
 
-            let lower_bound = max(knot_index - tableau_index + 1, 1);
-            let upper_bound = min(knot_index - 1, num_knots - tableau_index);
+            let lower_bound = std::cmp::max(knot_index - tableau_index + 1, 1);
+            let upper_bound = std::cmp::min(knot_index - 1, num_knots - tableau_index);
             if lower_bound <= upper_bound {
                 // Ordinary splines
                 if tableau_index < half_order * 2 {
