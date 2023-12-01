@@ -1,6 +1,6 @@
 use crate::support::{check_increasing, check_order, FittingError};
 
-pub fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<Vec<f64>>, f64), FittingError> {
+pub fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<f64>, f64), FittingError> {
     let num_knots = knots.len();
     check_increasing(knots)?;
     check_order(half_order, num_knots)?;
@@ -9,10 +9,10 @@ pub fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<Vec<f64>
 
     // Linear case (half order and spline order = 1)
     if half_order == 1 {
-        return Ok((vec![vec![1.0; num_knots]], 1.0));
+        return Ok((vec![1.0; num_knots], 1.0));
     }
 
-    let mut spline_tableau = vec![vec![0.0; num_knots]; spline_order];
+    let mut spline_tableau = vec![0.0; num_knots * spline_order];
     // General case
     for knot_index in 1 ..= num_knots {
         let mut working_vec = vec![0.0; 2 * half_order];
@@ -78,15 +78,12 @@ pub fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<Vec<f64>
                 }
             }
         }
-        for spline_index in 0 ..= spline_order {
-            spline_tableau[spline_index][knot_index - 1] = working_vec[spline_index];
+        for spline_index in 0 .. spline_order {
+            spline_tableau[(knot_index - 1) * spline_order + spline_index] = working_vec[spline_index];
         }
     }
 
-    let basis_l1_norm: f64 = spline_tableau
-        .iter()
-        .map(|vec| vec.iter().map(|element| element.abs()).sum::<f64>())
-        .sum::<f64>() / num_knots as f64;
+    let basis_l1_norm: f64 = spline_tableau.iter().map(|element| element.abs()).sum::<f64>() / num_knots as f64;
 
     Ok((spline_tableau, basis_l1_norm))
 }
