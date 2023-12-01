@@ -1,6 +1,8 @@
 pub mod gcv_spline;
 
 mod basis;
+mod support;
+mod prep;
 
 #[cfg(test)]
 mod tests {

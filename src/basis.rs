@@ -1,15 +1,10 @@
 use std::cmp::{max, min};
+use crate::support::{check_increasing, check_order, FittingError};
 
-pub fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<Vec<f64>>, f64), BasisCreationError> {
+pub fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<Vec<f64>>, f64), FittingError> {
     let num_knots = knots.len();
-    if num_knots < 2 * half_order {
-        return Err(BasisCreationError::NotEnoughKnots(
-            String::from(format!(
-                    "At least {} knots needed, {} provided", 2 * half_order, num_knots
-                )
-            )
-        ));
-    }
+    check_increasing(knots)?;
+    check_order(half_order, num_knots)?;
 
     let spline_order = half_order * 2 - 1;
 
@@ -89,15 +84,10 @@ pub fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<Vec<f64>
         }
     }
 
-    let basis_l1_norm = spline_tableau
+    let basis_l1_norm: f64 = spline_tableau
         .iter()
         .map(|vec| vec.iter().map(|element| element.abs()).sum::<f64>())
-        .sum();
+        .sum::<f64>() / num_knots as f64;
 
     Ok((spline_tableau, basis_l1_norm))
-}
-
-#[derive(Debug)]
-pub enum BasisCreationError {
-    NotEnoughKnots(String),
 }
