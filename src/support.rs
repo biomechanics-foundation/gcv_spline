@@ -4,6 +4,7 @@ pub enum FittingError {
     VectorLengthMismatch(String),
     KnotsNotStrictlyIncreasing(String),
     InsufficientKnots(String),
+    MatrixMismatch(String),
 }
 
 pub fn check_order(half_order: usize, num_knots: usize) -> Result<(), FittingError> {
@@ -44,6 +45,15 @@ pub fn check_increasing(knots: &Vec<f64>) -> Result<(), FittingError> {
             ));
         }
         previous = next;
+    }
+    Ok(())
+}
+
+pub fn check_matrix_size(matrix_1: &Vec<f64>, matrix_2: &Vec<f64>) -> Result<(), FittingError> {
+    if matrix_1.len() != matrix_2.len() {
+        return Err(FittingError::MatrixMismatch(
+            String::from(format!("Matrix size mismatch: {} and {}", matrix_1.len(), matrix_2.len()))
+        ));
     }
     Ok(())
 }

@@ -5,6 +5,7 @@ mod support;
 mod prep;
 mod bandet;
 mod bansol;
+mod trinv;
 
 #[cfg(test)]
 mod tests {
