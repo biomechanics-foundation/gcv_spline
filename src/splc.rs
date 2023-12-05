@@ -1,4 +1,4 @@
-use crate::bandet::{consume_and_decompose, decompose_in_place};
+use crate::bandet::{consume_and_decompose};
 use crate::bansol::solve_decomposed_system;
 use crate::support::{check_order, check_vector_length, FittingError};
 use crate::trinv::trace_inverse;
@@ -8,7 +8,7 @@ pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
                                           real_smoothing: f64, tolerance: f64,
                                           spline_tableau: &Vec<f64>, weighted_tableau: &Vec<f64>,
                                           weighted_norm: f64)
-        -> Result<Ok(f64, Vec<f64>, Vec<f64>, Vec<f64>), FittingError> {
+        -> Result<(f64, Vec<f64>, Vec<f64>, Vec<f64>), FittingError> {
     let num_knots: usize = spline_tableau.len() / (2 * half_order - 1);
     check_order(half_order, num_knots)?;
     check_vector_length(data, num_knots)?;
@@ -39,13 +39,11 @@ pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
         let upper_bound = std::cmp::min(half_order, num_knots - knot_index) as i32;
 
         for inner in lower_bound ..= upper_bound {
+            let index = ((knot_index as i32 - 1) * (half_order as i32 * 2 + 1) + inner + half_order as i32) as usize;
             if inner.abs() as usize == half_order {
-                inverted_weighted_matrix[(knot_index - 1) * (half_order * 2 + 1) + inner + half_order]
-                    = smoothing * weighted_tableau[(knot_index - 1) * (half_order * 2 + 1) + inner + half_order];
+                inverted_weighted_matrix[index] = smoothing * weighted_tableau[index];
             } else {
-                inverted_weighted_matrix[(knot_index - 1) * (half_order * 2 + 1) + inner + half_order]
-                    = spline_tableau[(knot_index - 1) * (half_order * 2 + 1) + inner + half_order - 1]
-                    + smoothing * weighted_tableau[(knot_index - 1) * (half_order * 2 + 1) + inner + half_order];
+                inverted_weighted_matrix[index] = spline_tableau[index - 1] + smoothing * weighted_tableau[index];
             }
         }
     }
@@ -67,12 +65,13 @@ pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
         let upper_bound = std::cmp::min(half_order - 1, num_knots - knot_index) as i32;
 
         for inner in lower_bound ..= upper_bound {
-            point += spline_tableau[(knot_index - 1) * (half_order * 2 + 1) + inner + half_order - 1]
-                * coefficients[knot_index + inner - 1];
+            let index = ((knot_index as i32 - 1) * (half_order as i32 * 2 + 1) + inner + half_order as i32 - 1) as usize;
+            point += spline_tableau[index]
+                * coefficients[(knot_index as i32 + inner - 1) as usize];
         }
         residual += point * point * weight_factors[knot_index - 1];
     }
-    residual /= num_knots;
+    residual /= num_knots as f64;
 
     let estimated_variance = residual / normalized_trace; // Estimated variance
     stats[0] = estimated_variance / normalized_trace; // GCV function value
@@ -87,6 +86,6 @@ pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
         stats[4] = residual - variance * (2.0 * normalized_trace - 1.0);
         splc = stats[4];
     }
-    
+
     Ok((splc, coefficients, stats, traced_matrix))
 }
