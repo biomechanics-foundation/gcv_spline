@@ -19,12 +19,12 @@ pub fn check_order(half_order: usize, num_knots: usize) -> Result<(), FittingErr
     Ok(())
 }
 
-pub fn check_vector_length(weights_diagonal: &Vec<f64>, num_knots: usize) -> Result<(), FittingError> {
-    if weights_diagonal.len() != num_knots {
+pub fn check_vector_length(vector: &Vec<f64>, num_knots: usize) -> Result<(), FittingError> {
+    if vector.len() != num_knots {
         return Err(FittingError::VectorLengthMismatch(
             String::from(format!(
                 "Vector length {} must match number of knots, {}",
-                weights_diagonal.len(), num_knots
+                vector.len(), num_knots
             ))
         ));
     }

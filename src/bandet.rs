@@ -1,6 +1,6 @@
 use crate::support::{check_order, FittingError};
 
-pub fn decompose_in_place(mut matrix: Vec<f64>, half_order: usize) -> Result<Vec<f64>, FittingError> {
+pub fn consume_and_decompose(mut matrix: Vec<f64>, half_order: usize) -> Result<Vec<f64>, FittingError> {
     let num_knots = matrix.len() / (2 * half_order + 1);
     check_order(half_order, num_knots)?;
 

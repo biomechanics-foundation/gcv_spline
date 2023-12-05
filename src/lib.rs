@@ -6,6 +6,7 @@ mod prep;
 mod bandet;
 mod bansol;
 mod trinv;
+mod splc;
 
 #[cfg(test)]
 mod tests {
