@@ -40,10 +40,11 @@ pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
 
         for inner in lower_bound ..= upper_bound {
             let index = ((knot_index as i32 - 1) * (half_order as i32 * 2 + 1) + inner + half_order as i32) as usize;
+            let index_b = ((knot_index as i32 - 1) * (half_order as i32 * 2 - 1) + inner + half_order as i32 - 1) as usize;
             if inner.abs() as usize == half_order {
                 inverted_weighted_matrix[index] = smoothing * weighted_tableau[index];
             } else {
-                inverted_weighted_matrix[index] = spline_tableau[index - 1] + smoothing * weighted_tableau[index];
+                inverted_weighted_matrix[index] = spline_tableau[index_b - 1] + smoothing * weighted_tableau[index];
             }
         }
     }
@@ -65,7 +66,7 @@ pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
         let upper_bound = std::cmp::min(half_order - 1, num_knots - knot_index) as i32;
 
         for inner in lower_bound ..= upper_bound {
-            let index = ((knot_index as i32 - 1) * (half_order as i32 * 2 + 1) + inner + half_order as i32 - 1) as usize;
+            let index = ((knot_index as i32 - 1) * (half_order as i32 * 2 - 1) + inner + half_order as i32 - 1) as usize;
             point += spline_tableau[index]
                 * coefficients[(knot_index as i32 + inner - 1) as usize];
         }

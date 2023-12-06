@@ -27,41 +27,47 @@ pub fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<f64>, f6
         // Further rows
         let current_knot = knots[knot_index - 1];
         for tableau_index in 3 ..= half_order * 2 {
-            let mut working_index = half_order + 1 - tableau_index;
-            let mut v_working = working_vec[working_index + half_order - 1];
+            let mut working_index = half_order as i32 + 1 - tableau_index as i32;
+            let mut v_working = working_vec[(working_index + half_order as i32 - 1) as usize];
 
             if knot_index < tableau_index {
                 // Left spline
                 for spline_index in knot_index + 1 ..= tableau_index {
                     let u_working = v_working;
-                    v_working = working_vec[working_index + half_order];
-                    working_vec[working_index + half_order - 1] =
+                    v_working = working_vec[(working_index + half_order as i32) as usize];
+                    working_vec[(working_index + half_order as i32 - 1) as usize] =
                         u_working + (knots[spline_index - 1] - current_knot) * v_working;
                     working_index += 1;
                 }
             }
 
-            let lower_bound = std::cmp::max(knot_index - tableau_index + 1, 1);
+            //println!("{}, {}", knot_index, tableau_index);
+            let lower_bound: i32;
+            if knot_index as i32 - tableau_index as i32 + 1 < 0 {
+                lower_bound = 1;
+            } else {
+                lower_bound = std::cmp::max(knot_index as i32 - tableau_index as i32 + 1, 1);
+            }
             let upper_bound = std::cmp::min(knot_index - 1, num_knots - tableau_index);
-            if lower_bound <= upper_bound {
+            if lower_bound <= upper_bound as i32 {
                 // Ordinary splines
                 if tableau_index < half_order * 2 {
-                    for spline_index in lower_bound..=upper_bound {
-                        let y_working = knots[tableau_index + spline_index - 1];
+                    for spline_index in lower_bound..=upper_bound as i32 {
+                        let y_working = knots[(tableau_index as i32 + spline_index - 1) as usize];
                         let u_working = v_working;
-                        v_working = working_vec[working_index + half_order];
-                        working_vec[working_index + half_order - 1] =
+                        v_working = working_vec[(working_index + half_order as i32) as usize];
+                        working_vec[(working_index + half_order as i32 - 1) as usize] =
                             u_working + (v_working - u_working) * (y_working - current_knot)
-                                / (y_working - knots[spline_index - 1]);
+                                / (y_working - knots[(spline_index - 1) as usize]);
                         working_index += 1;
                     }
                 } else {
-                    for spline_index in lower_bound..=upper_bound {
+                    for spline_index in lower_bound..=upper_bound as i32 {
                         let u_working = v_working;
-                        v_working = working_vec[working_index + half_order];
-                        working_vec[working_index + half_order - 1] =
-                            (current_knot - knots[spline_index - 1]) * u_working +
-                                (knots[tableau_index + spline_index - 1] - current_knot) * v_working;
+                        v_working = working_vec[(working_index + half_order as i32) as usize];
+                        working_vec[(working_index + half_order as i32 - 1) as usize] =
+                            (current_knot - knots[(spline_index - 1) as usize]) * u_working +
+                                (knots[(tableau_index as i32 + spline_index - 1) as usize] - current_knot) * v_working;
                         working_index += 1;
                     }
                 }
@@ -71,8 +77,8 @@ pub fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<f64>, f6
                 // Right splines
                 for spline_index in num_knots - tableau_index + 1 ..= knot_index - 1 {
                     let u_working = v_working;
-                    v_working = working_vec[working_index + half_order];
-                    working_vec[working_index + half_order - 1] =
+                    v_working = working_vec[(working_index + half_order as i32) as usize];
+                    working_vec[(working_index + half_order as i32 - 1) as usize] =
                         (current_knot - knots[spline_index - 1]) * u_working + v_working;
                     working_index += 1;
                 }
