@@ -15,7 +15,7 @@ pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
     check_vector_length(weight_factors, num_knots)?;
 
     let mut smoothing = real_smoothing;
-    let mut stats = vec![0.0; 5];
+    let mut stats = vec![0.0; 6];
     let mut inverted_weighted_matrix = vec![0.0; weighted_tableau.len()];
     let splc: f64;
 
@@ -74,6 +74,7 @@ pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
     residual /= num_knots as f64;
 
     let estimated_variance = residual / normalized_trace; // Estimated variance
+    stats[5] = estimated_variance;
     stats[0] = estimated_variance / normalized_trace; // GCV function value
     stats[1] = residual; // mean squared residual
 

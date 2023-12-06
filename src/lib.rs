@@ -1,3 +1,6 @@
+use crate::gcvspl::fit_gcv_spline;
+use crate::splc::fit_spline_coefficients_with_stats;
+
 pub mod gcv_spline;
 
 mod basis;
@@ -7,6 +10,9 @@ mod bandet;
 mod bansol;
 mod trinv;
 mod splc;
+mod gcvspl;
+
+
 
 #[cfg(test)]
 mod tests {
