@@ -11,7 +11,7 @@ mod bansol;
 mod trinv;
 mod splc;
 mod gcvspl;
-
+mod search;
 
 
 #[cfg(test)]
