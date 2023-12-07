@@ -8,7 +8,9 @@ pub fn find_knot_interval(knots: &Vec<f64>, point: f64, knot_guess: usize) -> us
     }
 
     let mut knot_interval = std::cmp::max(knot_guess, 1);
-    knot_interval = std::cmp::min(knot_guess, num_knots - 1);
+    if knot_interval >= num_knots {
+        knot_interval = num_knots - 1;
+    }
 
     let (mut lower_index, mut upper_index);
     // Often L will be in an interval adjoining the interval found in a previous call to search

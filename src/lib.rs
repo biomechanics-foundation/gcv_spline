@@ -12,6 +12,7 @@ mod trinv;
 mod splc;
 mod gcvspl;
 mod search;
+mod splder;
 
 
 #[cfg(test)]

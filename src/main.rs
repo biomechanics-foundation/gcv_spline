@@ -1,4 +1,5 @@
 use crate::gcvspl::fit_gcv_spline;
+use crate::splder::evaluate_spline;
 
 pub mod gcv_spline;
 
@@ -10,6 +11,8 @@ mod bansol;
 mod trinv;
 mod splc;
 mod gcvspl;
+mod splder;
+mod search;
 
 
 pub fn main() {
@@ -17,7 +20,10 @@ pub fn main() {
     let data = knots.clone().iter().map(|e| (e * 0.01).sin()).collect();
     let weights = vec![1.0; knots.len()];
 
-    let (coefs, variance, stats) = fit_gcv_spline(&knots, &data, &weights, 3, 0.0).unwrap();
-    println!("Number of coefs: {}", coefs.len());
-    println!("Coefs: {:?}", coefs);
+    let (coefs, variance, stats) = fit_gcv_spline(&knots, &data, &weights, 3, 0.01).unwrap();
+    //println!("Number of coefs: {}", coefs.len());
+    //println!("Coefs: {:?}", coefs);
+
+    let value = evaluate_spline(0, 3, 10.0, &knots, &coefs, 0);
+    println!("Evaluation: {}", value)
 }
