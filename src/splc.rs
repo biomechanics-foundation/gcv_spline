@@ -7,8 +7,10 @@ pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
                                           weight_factors: &Vec<f64>, variance: f64,
                                           real_smoothing: f64, tolerance: f64,
                                           spline_tableau: &Vec<f64>, weighted_tableau: &Vec<f64>,
-                                          weighted_norm: f64)
-        -> Result<(f64, Vec<f64>, Vec<f64>, Vec<f64>), FittingError> {
+                                          weighted_norm: f64, coefs_current: &mut Vec<f64>,
+                                          stats_current: &mut Vec<f64>,
+                                          traced_current: &mut Vec<f64> )
+                                          -> Result<f64, FittingError> {
     let num_knots: usize = spline_tableau.len() / (2 * half_order - 1);
     check_order(half_order, num_knots)?;
     check_vector_length(data, num_knots)?;
@@ -89,5 +91,8 @@ pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
         splc = stats[4];
     }
 
-    Ok((splc, coefficients, stats, traced_matrix))
+    *coefs_current = coefficients;
+    *stats_current = stats;
+    *traced_current = traced_matrix;
+    Ok(splc)
 }

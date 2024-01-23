@@ -33,19 +33,22 @@ pub fn fit_gcv_spline(knots: &Vec<f64>, data: &Vec<f64>, weight_factors: &Vec<f6
     // Zero variance case
     if variance == 0.0 {
         smoothing_1 = 0.0; //let (g, c, s, tm)
-        (gcv_f1, coefficients, stats, traced_matrix) = fit_spline_coefficients_with_stats(
+        gcv_f1 = fit_spline_coefficients_with_stats(
             half_order, &data, &weight_factors, variance, smoothing_1, epsilon, &spline_tableau,
-            &weighted_matrix, weighted_matrix_norm)?;
+            &weighted_matrix, weighted_matrix_norm, &mut coefficients, &mut stats,
+            &mut traced_matrix)?;
     } else {
         let mut solved = false;
         smoothing_1 = 1.0 / weighted_matrix_norm;
         smoothing_2 = smoothing_1 * smoothing_ratio;
-        (gcv_f2, _, _, _) = fit_spline_coefficients_with_stats(
+        gcv_f2 = fit_spline_coefficients_with_stats(
             half_order, &data, &weight_factors, variance, smoothing_2, epsilon, &spline_tableau,
-            &weighted_matrix, weighted_matrix_norm)?;
-        (gcv_f1, coefficients, stats, traced_matrix) = fit_spline_coefficients_with_stats(
+            &weighted_matrix, weighted_matrix_norm, &mut coefficients, &mut stats,
+            &mut traced_matrix)?;
+        gcv_f1 = fit_spline_coefficients_with_stats(
             half_order, &data, &weight_factors, variance, smoothing_1, epsilon, &spline_tableau,
-            &weighted_matrix, weighted_matrix_norm)?;
+            &weighted_matrix, weighted_matrix_norm, &mut coefficients, &mut stats,
+            &mut traced_matrix)?;
         while gcv_f1 <= gcv_f2 && !solved {
             if stats[3] <= 0.0 {
                 solved = true;
@@ -53,16 +56,18 @@ pub fn fit_gcv_spline(knots: &Vec<f64>, data: &Vec<f64>, weight_factors: &Vec<f6
                 smoothing_2 = smoothing_1;
                 gcv_f2 = gcv_f1;
                 smoothing_1 /= smoothing_ratio;
-                (gcv_f1, coefficients, stats, traced_matrix) = fit_spline_coefficients_with_stats(
+                gcv_f1 = fit_spline_coefficients_with_stats(
                     half_order, &data, &weight_factors, variance, smoothing_1, epsilon, &spline_tableau,
-                    &weighted_matrix, weighted_matrix_norm)?;
+                    &weighted_matrix, weighted_matrix_norm, &mut coefficients, &mut stats,
+                    &mut traced_matrix)?;
             }
         }
         if !solved {
             smoothing_3 = smoothing_2 * smoothing_ratio;
-            (gcv_f3, coefficients, stats, traced_matrix) = fit_spline_coefficients_with_stats(
+            gcv_f3 = fit_spline_coefficients_with_stats(
                 half_order, &data, &weight_factors, variance, smoothing_3, epsilon, &spline_tableau,
-                &weighted_matrix, weighted_matrix_norm)?;
+                &weighted_matrix, weighted_matrix_norm, &mut coefficients, &mut stats,
+                &mut traced_matrix)?;
             while gcv_f3 <= gcv_f2 && !solved {
                 if stats[3] >= 1.0 {
                     solved = true;
@@ -70,9 +75,10 @@ pub fn fit_gcv_spline(knots: &Vec<f64>, data: &Vec<f64>, weight_factors: &Vec<f6
                     smoothing_2 = smoothing_3;
                     gcv_f2 = gcv_f3;
                     smoothing_3 *= smoothing_ratio;
-                    (gcv_f3, coefficients, stats, traced_matrix) = fit_spline_coefficients_with_stats(
+                    gcv_f3 = fit_spline_coefficients_with_stats(
                         half_order, &data, &weight_factors, variance, smoothing_3, epsilon, &spline_tableau,
-                        &weighted_matrix, weighted_matrix_norm)?;
+                        &weighted_matrix, weighted_matrix_norm, &mut coefficients, &mut stats,
+                        &mut traced_matrix)?;
                 }
             }
             if !solved {
@@ -81,12 +87,14 @@ pub fn fit_gcv_spline(knots: &Vec<f64>, data: &Vec<f64>, weight_factors: &Vec<f6
                 let mut alpha = (smoothing_2 - smoothing_1) / tau;
                 smoothing_4 = smoothing_1 + alpha;
                 smoothing_3 = smoothing_2 - alpha;
-                (gcv_f3, coefficients, stats, traced_matrix) = fit_spline_coefficients_with_stats(
+                gcv_f3 = fit_spline_coefficients_with_stats(
                     half_order, &data, &weight_factors, variance, smoothing_3, epsilon, &spline_tableau,
-                    &weighted_matrix, weighted_matrix_norm)?;
-                (gcv_f4, coefficients, stats, traced_matrix) = fit_spline_coefficients_with_stats(
+                    &weighted_matrix, weighted_matrix_norm, &mut coefficients, &mut stats,
+                    &mut traced_matrix)?;
+                gcv_f4 = fit_spline_coefficients_with_stats(
                     half_order, &data, &weight_factors, variance, smoothing_4, epsilon, &spline_tableau,
-                    &weighted_matrix, weighted_matrix_norm)?;
+                    &weighted_matrix, weighted_matrix_norm, &mut coefficients, &mut stats,
+                    &mut traced_matrix)?;
                 while !solved {
                     if gcv_f3 <= gcv_f4 {
                         smoothing_2 = smoothing_4;
@@ -99,9 +107,10 @@ pub fn fit_gcv_spline(knots: &Vec<f64>, data: &Vec<f64>, weight_factors: &Vec<f6
                             gcv_f4 = gcv_f3;
                             alpha = alpha / tau;
                             smoothing_3 = smoothing_2 - alpha;
-                            (gcv_f3, coefficients, stats, traced_matrix) = fit_spline_coefficients_with_stats(
+                            gcv_f3 = fit_spline_coefficients_with_stats(
                                 half_order, &data, &weight_factors, variance, smoothing_3, epsilon, &spline_tableau,
-                                &weighted_matrix, weighted_matrix_norm)?;
+                                &weighted_matrix, weighted_matrix_norm, &mut coefficients, &mut stats,
+                                &mut traced_matrix)?;
                         }
                     } else {
                         smoothing_1 = smoothing_3;
@@ -114,16 +123,18 @@ pub fn fit_gcv_spline(knots: &Vec<f64>, data: &Vec<f64>, weight_factors: &Vec<f6
                             gcv_f3 = gcv_f4;
                             alpha /= tau;
                             smoothing_4 = smoothing_1 + alpha;
-                            (gcv_f4, coefficients, stats, traced_matrix) = fit_spline_coefficients_with_stats(
+                            gcv_f4 = fit_spline_coefficients_with_stats(
                                 half_order, &data, &weight_factors, variance, smoothing_4, epsilon, &spline_tableau,
-                                &weighted_matrix, weighted_matrix_norm)?;
+                                &weighted_matrix, weighted_matrix_norm, &mut coefficients, &mut stats,
+                                &mut traced_matrix)?;
                         }
                     }
                 }
                 smoothing_1 = 0.5 * (smoothing_1 + smoothing_2);
-                (gcv_f1, coefficients, stats, traced_matrix) = fit_spline_coefficients_with_stats(
+                gcv_f1 = fit_spline_coefficients_with_stats(
                     half_order, &data, &weight_factors, variance, smoothing_1, epsilon, &spline_tableau,
-                    &weighted_matrix, weighted_matrix_norm)?;
+                    &weighted_matrix, weighted_matrix_norm, &mut coefficients, &mut stats,
+                    &mut traced_matrix)?;
             }
         }
         if variance < 0.0 {

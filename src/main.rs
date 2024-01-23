@@ -20,7 +20,7 @@ pub fn main() {
     let data = knots.clone().iter().map(|e| (e * 0.01).sin()).collect();
     let weights = vec![1.0; knots.len()];
 
-    let (coefs, variance, stats) = fit_gcv_spline(&knots, &data, &weights, 3, 1.0).unwrap();
+    let (coefs, variance, stats) = fit_gcv_spline(&knots, &data, &weights, 3, 0.0).unwrap();
     //println!("Number of coefs: {}", coefs.len());
     println!("Coefs: {:?}", coefs);
     println!("Variance: {}", variance);
