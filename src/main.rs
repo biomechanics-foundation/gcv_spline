@@ -26,6 +26,6 @@ pub fn main() {
     println!("Variance: {}", variance);
     println!("Stats: {:?}", stats);
 
-    let value = evaluate_spline(0, 3, 50.5, &knots, &coefs, 0);
+    let value = evaluate_spline(2, 3, 50.5, &knots, &coefs, 0);
     println!("Evaluation: {}", value)
 }

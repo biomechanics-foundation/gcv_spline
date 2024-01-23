@@ -41,7 +41,7 @@ pub fn evaluate_spline(derivative_order: usize, half_order: usize, point: f64, k
             if idx_1 <= idx_2 {
                 for _ in idx_1 ..= idx_2 {
                     idx -= 1;
-                    let work_idx = index_bound as usize + idx;
+                    let work_idx = (index_bound + idx as i32) as usize;
                     tableau[work_idx - 1] = (tableau[work_idx - 1] - tableau[work_idx - 2])
                         / (knots[idx + half_order * 2 - der_index - 1] - knots[idx - 1]);
                 }
@@ -57,7 +57,7 @@ pub fn evaluate_spline(derivative_order: usize, half_order: usize, point: f64, k
             }
         }
         for idx in 1 ..= order {
-            tableau[idx as usize] = tableau[idx as usize + derivative_order - 1];
+            tableau[idx as usize - 1] = tableau[idx as usize + derivative_order - 1];
         }
     }
 
