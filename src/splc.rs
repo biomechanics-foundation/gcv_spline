@@ -19,7 +19,7 @@ pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
     let mut inverted_weighted_matrix = vec![0.0; weighted_tableau.len()];
     let splc: f64;
 
-    stats[3] = real_smoothing / (1.0 - real_smoothing);
+    stats[3] = real_smoothing / (1.0 + real_smoothing);
 
     // Pseudo least squares polynomial if smoothing parameter is too large
     if real_smoothing * weighted_norm * tolerance > 1.0 {
@@ -44,7 +44,7 @@ pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
             if inner.abs() as usize == half_order {
                 inverted_weighted_matrix[index] = smoothing * weighted_tableau[index];
             } else {
-                inverted_weighted_matrix[index] = spline_tableau[index_b - 1] + smoothing * weighted_tableau[index];
+                inverted_weighted_matrix[index] = spline_tableau[index_b] + smoothing * weighted_tableau[index];
             }
         }
     }
