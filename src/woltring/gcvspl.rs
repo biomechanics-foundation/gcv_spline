@@ -1,7 +1,7 @@
-use crate::basis::create_basis;
-use crate::prep::create_weighted_matrix;
-use crate::splc::fit_spline_coefficients_with_stats;
-use crate::support::{check_increasing, check_order, check_vector_length, FittingError};
+use crate::woltring::basis::create_basis;
+use crate::woltring::prep::create_weighted_matrix;
+use crate::woltring::splc::fit_spline_coefficients_with_stats;
+use crate::woltring::support::{check_increasing, check_order, check_vector_length, FittingError};
 
 pub fn fit_gcv_spline(knots: &Vec<f64>, data: &Vec<f64>, weight_factors: &Vec<f64>,
                       half_order: usize, error_variance: f64)

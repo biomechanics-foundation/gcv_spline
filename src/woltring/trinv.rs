@@ -1,4 +1,4 @@
-use crate::support::{check_matrix_size, check_order, FittingError};
+use crate::woltring::support::{check_matrix_size, check_order, FittingError};
 
 pub fn trace_inverse(basis_tableau: &Vec<f64>, mut decomp_matrix: Vec<f64>, half_order: usize)
     -> Result<(Vec<f64>, f64), FittingError> {

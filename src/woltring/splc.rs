@@ -1,7 +1,7 @@
-use crate::bandet::{consume_and_decompose};
-use crate::bansol::solve_decomposed_system;
-use crate::support::{check_order, check_vector_length, FittingError};
-use crate::trinv::trace_inverse;
+use crate::woltring::bandet::{consume_and_decompose};
+use crate::woltring::bansol::solve_decomposed_system;
+use crate::woltring::support::{check_order, check_vector_length, FittingError};
+use crate::woltring::trinv::trace_inverse;
 
 pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
                                           weight_factors: &Vec<f64>, variance: f64,

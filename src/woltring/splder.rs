@@ -1,4 +1,4 @@
-use crate::search::find_knot_interval;
+use crate::woltring::search::find_knot_interval;
 
 pub fn evaluate_spline(derivative_order: usize, half_order: usize, point: f64, knots: &Vec<f64>,
                        coefficients: &Vec<f64>, knot_guess: usize) -> f64 {

@@ -1,18 +1,9 @@
-use crate::gcvspl::fit_gcv_spline;
-use crate::splder::evaluate_spline;
+use crate::woltring::gcvspl::fit_gcv_spline;
+use crate::woltring::splder::evaluate_spline;
 
 pub mod gcv_spline;
 
-mod basis;
-mod support;
-mod prep;
-mod bandet;
-mod bansol;
-mod trinv;
-mod splc;
-mod gcvspl;
-mod search;
-mod splder;
+mod woltring;
 
 
 #[cfg(test)]
