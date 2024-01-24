@@ -12,7 +12,7 @@ pub fn trace_inverse(basis_tableau: &Vec<f64>, mut decomp_matrix: Vec<f64>, half
     decomp_matrix[(num_knots - 1) * (half_order * 2 + 1) + half_order] =
         1.0 / decomp_matrix[(num_knots - 1) * (half_order * 2 + 1) + half_order]; // n-th pivot
     for knot_index in (1 ..= num_knots - 1).rev() {
-        let order_index = std::cmp::min(half_order, num_knots - knot_index);
+        let order_index = half_order.min(num_knots - knot_index);
 
         inversion = 1.0 / decomp_matrix[(knot_index - 1) * (half_order * 2 + 1) + half_order]; // i-th pivot
 
@@ -45,8 +45,8 @@ pub fn trace_inverse(basis_tableau: &Vec<f64>, mut decomp_matrix: Vec<f64>, half
     // Trace and zero portions of inverted matrix
     let mut trace = 0.0;
     for knot_index in 1 ..= num_knots {
-        let lower_bound = std::cmp::min(half_order, knot_index - 1);
-        let upper_bound = std::cmp::min(half_order, num_knots - knot_index);
+        let lower_bound = half_order.min(knot_index - 1);
+        let upper_bound = half_order.min(num_knots - knot_index);
         for idx in lower_bound ..= upper_bound {
             trace += basis_tableau[(knot_index - 1) * (half_order * 2 + 1) + idx + half_order] *
                 decomp_matrix[(idx + knot_index - 1) * (half_order * 2 + 1) - idx + half_order];

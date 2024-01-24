@@ -37,8 +37,8 @@ pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
 
     // Calculate inverted weighted matrix
     for knot_index in 1 ..= num_knots {
-        let lower_bound = -1 * std::cmp::min(half_order, knot_index - 1) as i32;
-        let upper_bound = std::cmp::min(half_order, num_knots - knot_index) as i32;
+        let lower_bound = -1 * half_order.min(knot_index - 1) as i32;
+        let upper_bound = half_order.min(num_knots - knot_index) as i32;
 
         for inner in lower_bound ..= upper_bound {
             let index = ((knot_index as i32 - 1) * (half_order as i32 * 2 + 1) + inner + half_order as i32) as usize;
@@ -64,8 +64,8 @@ pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
     for knot_index in 1 ..= num_knots {
         let mut point = -data[knot_index - 1];
 
-        let lower_bound = -1 * std::cmp::min(half_order - 1, knot_index - 1) as i32;
-        let upper_bound = std::cmp::min(half_order - 1, num_knots - knot_index) as i32;
+        let lower_bound = -1 * (half_order - 1).min(knot_index - 1) as i32;
+        let upper_bound = (half_order - 1).min(num_knots - knot_index) as i32;
 
         for inner in lower_bound ..= upper_bound {
             let index = ((knot_index as i32 - 1) * (half_order as i32 * 2 - 1) + inner + half_order as i32 - 1) as usize;

@@ -46,9 +46,9 @@ pub fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<f64>, f6
             if knot_index as i32 - tableau_index as i32 + 1 < 0 {
                 lower_bound = 1;
             } else {
-                lower_bound = std::cmp::max(knot_index as i32 - tableau_index as i32 + 1, 1);
+                lower_bound = (knot_index as i32 - tableau_index as i32 + 1).max(1);
             }
-            let upper_bound = std::cmp::min(knot_index - 1, num_knots - tableau_index);
+            let upper_bound = (knot_index - 1).min(num_knots - tableau_index);
             if lower_bound <= upper_bound as i32 {
                 // Ordinary splines
                 if tableau_index < half_order * 2 {

@@ -7,7 +7,7 @@ pub fn find_knot_interval(knots: &Vec<f64>, point: f64, knot_guess: usize) -> us
         return num_knots;
     }
 
-    let mut knot_interval = std::cmp::max(knot_guess, 1);
+    let mut knot_interval = knot_guess.max(1);
     if knot_interval >= num_knots {
         knot_interval = num_knots - 1;
     }

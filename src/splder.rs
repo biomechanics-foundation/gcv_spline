@@ -35,8 +35,8 @@ pub fn evaluate_spline(derivative_order: usize, half_order: usize, point: f64, k
         for der_index in 1 ..= derivative_order {
             lower_index += 1;
             inner_index += 1;
-            let idx_1 = std::cmp::max(1, lower_index) as usize;
-            let idx_2 = std::cmp::min(knot_interval, inner_index);
+            let idx_1 = 1.max(lower_index) as usize;
+            let idx_2 = knot_interval.min(inner_index);
             let mut idx = idx_2 + 1;
             if idx_1 <= idx_2 {
                 for _ in idx_1 ..= idx_2 {
@@ -81,8 +81,8 @@ pub fn evaluate_spline(derivative_order: usize, half_order: usize, point: f64, k
 
             // Middle B-splines
             //lk1i = knot_interval - order + 1 + idx
-            let idx_1 = std::cmp::max(1, knot_interval as i32 - order + 1 + idx as i32);
-            let idx_2 = std::cmp::min(knot_interval, order_idx) as i32;
+            let idx_1 = 1.max(knot_interval as i32 - order + 1 + idx as i32);
+            let idx_2 = knot_interval.min(order_idx) as i32;
             if idx_1 <= idx_2 {
                 for _ in idx_1 ..= idx_2 {
                     let working_knot = knots[(knot_idx as i32 + order - idx as i32 - 1) as usize];
