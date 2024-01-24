@@ -36,8 +36,8 @@ pub fn trace_inverse(basis_tableau: &Vec<f64>, mut decomp_matrix: Vec<f64>, half
             }
             decomp_matrix[(knot_index - 1) * (half_order * 2 + 1) + outer + half_order] = invert_upper;
             decomp_matrix[(outer + knot_index - 1) * (half_order * 2 + 1) - outer + half_order] = invert_lower;
-            inversion -= (decomp_matrix[(num_knots - 1) * (half_order * 2 + 1) + outer + half_order] * invert_lower +
-                decomp_matrix[half_order - outer] * invert_upper);
+            inversion -= decomp_matrix[(num_knots - 1) * (half_order * 2 + 1) + outer + half_order]
+                * invert_lower + decomp_matrix[half_order - outer] * invert_upper;
         }
         decomp_matrix[(knot_index - 1) * (half_order * 2 + 1) + half_order] = inversion / 2.0;
     }

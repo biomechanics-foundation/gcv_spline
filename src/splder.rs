@@ -16,7 +16,7 @@ pub fn evaluate_spline(derivative_order: usize, half_order: usize, point: f64, k
     // Initialize parameters and first row of B-spline coefficients tableau
     let mut tableau = vec![0.0; 2 * half_order];
     let mut lower_index = knot_interval as i32 + 1;
-    let mut upper_index = knot_interval as i32 + half_order as i32 * 2;
+    let upper_index = knot_interval as i32 + half_order as i32 * 2;
     let mut inner_index = num_knots - 2 * half_order;
 
     for index in lower_index ..= upper_index {
