@@ -73,7 +73,7 @@ pub fn create_weighted_matrix(half_order: usize, knots: &Vec<f64>, weights_diago
             matrix_factor /= knot_value - knots[idx - 1];
         }
         weighted_matrix[matrix_index - 1] = matrix_factor;
-        matrix_index += half_order * 2;
+        // matrix_index += half_order * 2;
         order_index += increment;
     }
 
