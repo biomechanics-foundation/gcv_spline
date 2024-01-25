@@ -7,7 +7,7 @@ pub enum FittingError {
     MatrixMismatch(String),
 }
 
-pub fn check_order(half_order: usize, num_knots: usize) -> Result<(), FittingError> {
+pub(crate) fn check_order(half_order: usize, num_knots: usize) -> Result<(), FittingError> {
     if num_knots < 2 * half_order {
         return Err(FittingError::NotEnoughKnotsForOrder(
             String::from(format!(
@@ -19,7 +19,7 @@ pub fn check_order(half_order: usize, num_knots: usize) -> Result<(), FittingErr
     Ok(())
 }
 
-pub fn check_vector_length(vector: &Vec<f64>, num_knots: usize) -> Result<(), FittingError> {
+pub(crate) fn check_vector_length(vector: &Vec<f64>, num_knots: usize) -> Result<(), FittingError> {
     if vector.len() != num_knots {
         return Err(FittingError::VectorLengthMismatch(
             String::from(format!(
@@ -31,7 +31,7 @@ pub fn check_vector_length(vector: &Vec<f64>, num_knots: usize) -> Result<(), Fi
     Ok(())
 }
 
-pub fn check_increasing(knots: &Vec<f64>) -> Result<(), FittingError> {
+pub(crate) fn check_increasing(knots: &Vec<f64>) -> Result<(), FittingError> {
     if knots.len() < 2 {
         return Err(FittingError::InsufficientKnots(String::from("At least 2 knots are needed")));
     }
@@ -49,7 +49,7 @@ pub fn check_increasing(knots: &Vec<f64>) -> Result<(), FittingError> {
     Ok(())
 }
 
-pub fn check_matrix_size(matrix_1: &Vec<f64>, matrix_2: &Vec<f64>) -> Result<(), FittingError> {
+pub(crate) fn check_matrix_size(matrix_1: &Vec<f64>, matrix_2: &Vec<f64>) -> Result<(), FittingError> {
     if matrix_1.len() != matrix_2.len() {
         return Err(FittingError::MatrixMismatch(
             String::from(format!("Matrix size mismatch: {} and {}", matrix_1.len(), matrix_2.len()))

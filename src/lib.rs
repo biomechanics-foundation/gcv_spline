@@ -2,13 +2,10 @@ use crate::woltring::{gcvspl::fit_gcv_spline, splder::evaluate_spline};
 
 pub mod spline;
 
-pub use spline::GcvSpline;
-
 pub mod woltring;
 
-pub mod prelude {
-    pub use crate::spline::GcvSpline;
-}
+pub use crate::spline::GcvSpline;
+pub use crate::woltring::support::FittingError;
 
 #[cfg(test)]
 mod tests {

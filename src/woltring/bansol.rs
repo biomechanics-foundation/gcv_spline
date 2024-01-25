@@ -1,6 +1,6 @@
 use crate::woltring::support::{check_order, FittingError};
 
-pub fn solve_decomposed_system(matrix: &Vec<f64>, rhs: &Vec<f64>, half_order: usize) -> Result<Vec<f64>, FittingError> {
+pub(crate) fn solve_decomposed_system(matrix: &Vec<f64>, rhs: &Vec<f64>, half_order: usize) -> Result<Vec<f64>, FittingError> {
     let num_knots = matrix.len() / (2 * half_order + 1);
     check_order(half_order, num_knots)?;
     let mut solution = vec![0.0; num_knots];

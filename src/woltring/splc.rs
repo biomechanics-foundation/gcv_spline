@@ -3,7 +3,7 @@ use crate::woltring::bansol::solve_decomposed_system;
 use crate::woltring::support::{check_order, check_vector_length, FittingError};
 use crate::woltring::trinv::trace_inverse;
 
-pub fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
+pub(crate) fn fit_spline_coefficients_with_stats(half_order: usize, data: &Vec<f64>,
                                           weight_factors: &Vec<f64>, variance: f64,
                                           real_smoothing: f64, tolerance: f64,
                                           spline_tableau: &Vec<f64>, weighted_tableau: &Vec<f64>,

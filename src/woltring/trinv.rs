@@ -1,6 +1,6 @@
 use crate::woltring::support::{check_matrix_size, check_order, FittingError};
 
-pub fn trace_inverse(basis_tableau: &Vec<f64>, mut decomp_matrix: Vec<f64>, half_order: usize)
+pub(crate) fn trace_inverse(basis_tableau: &Vec<f64>, mut decomp_matrix: Vec<f64>, half_order: usize)
     -> Result<(Vec<f64>, f64), FittingError> {
     let num_knots = decomp_matrix.len() / (2 * half_order + 1);
     check_order(half_order, num_knots)?;

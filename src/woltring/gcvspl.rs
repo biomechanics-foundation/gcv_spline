@@ -3,7 +3,7 @@ use crate::woltring::prep::create_weighted_matrix;
 use crate::woltring::splc::fit_spline_coefficients_with_stats;
 use crate::woltring::support::{check_increasing, check_order, check_vector_length, FittingError};
 
-pub fn fit_gcv_spline(knots: &Vec<f64>, data: &Vec<f64>, weight_factors: &Vec<f64>,
+pub(crate) fn fit_gcv_spline(knots: &Vec<f64>, data: &Vec<f64>, weight_factors: &Vec<f64>,
                       half_order: usize, error_variance: f64)
         -> Result<Vec<f64>, FittingError> {
     let num_knots = knots.len();

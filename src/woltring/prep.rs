@@ -1,6 +1,6 @@
 use crate::woltring::support::{check_increasing, check_order, check_vector_length, FittingError};
 
-pub fn create_weighted_matrix(half_order: usize, knots: &Vec<f64>, weights_diagonal: &Vec<f64>)
+pub(crate) fn create_weighted_matrix(half_order: usize, knots: &Vec<f64>, weights_diagonal: &Vec<f64>)
     -> Result<(Vec<f64>, f64), FittingError> {
     let num_knots = knots.len();
     check_increasing(knots)?;

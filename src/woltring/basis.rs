@@ -1,6 +1,6 @@
 use crate::woltring::support::{check_increasing, check_order, FittingError};
 
-pub fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<f64>, f64), FittingError> {
+pub(crate) fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<f64>, f64), FittingError> {
     let num_knots = knots.len();
     check_increasing(knots)?;
     check_order(half_order, num_knots)?;

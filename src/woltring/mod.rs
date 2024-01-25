@@ -1,10 +1,10 @@
 mod basis;
-mod support;
+pub mod support;
 mod prep;
 mod bandet;
 mod bansol;
 mod trinv;
 mod splc;
 mod search;
-pub mod gcvspl;
-pub mod splder;
+pub(crate) mod gcvspl;
+pub(crate) mod splder;

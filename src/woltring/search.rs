@@ -1,4 +1,4 @@
-pub fn find_knot_interval(knots: &Vec<f64>, point: f64, knot_guess: usize) -> usize {
+pub(crate) fn find_knot_interval(knots: &Vec<f64>, point: f64, knot_guess: usize) -> usize {
     if point < knots[0] {
         return 0;
     }
