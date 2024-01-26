@@ -20,7 +20,7 @@ pub(crate) fn check_order(half_order: usize, num_knots: usize) -> Result<(), Fit
     if num_knots < 2 * half_order {
         return Err(FittingError::NotEnoughKnotsForOrder(
             String::from(format!(
-                "At least {} knots needed, {} provided", 2 * half_order, num_knots
+                "At least {} knots (time points) needed, {} provided", 2 * half_order, num_knots
             )
             )
         ));
@@ -32,7 +32,7 @@ pub(crate) fn check_vector_length(vector: &Vec<f64>, num_knots: usize) -> Result
     if vector.len() != num_knots {
         return Err(FittingError::VectorLengthMismatch(
             String::from(format!(
-                "Vector length {} must match number of knots, {}",
+                "Vector length {} must match number of knots (time points), {}",
                 vector.len(), num_knots
             ))
         ));
@@ -42,7 +42,7 @@ pub(crate) fn check_vector_length(vector: &Vec<f64>, num_knots: usize) -> Result
 
 pub(crate) fn check_increasing(knots: &Vec<f64>) -> Result<(), FittingError> {
     if knots.len() < 2 {
-        return Err(FittingError::InsufficientKnots(String::from("At least 2 knots are needed")));
+        return Err(FittingError::InsufficientKnots(String::from("At least 2 knots (time points) are needed")));
     }
 
     let mut knots_iter = knots.iter();
