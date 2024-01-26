@@ -1,5 +1,6 @@
 use std::{error::Error, fmt};
 
+/// Reports input errors that prevent fitting a GCV spline.
 #[derive(Debug)]
 pub enum FittingError {
     NotEnoughKnotsForOrder(String),
