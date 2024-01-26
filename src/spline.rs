@@ -12,7 +12,7 @@ pub struct GcvSpline {
 impl GcvSpline {
     pub fn new() -> Self {
         GcvSpline {
-            knots: vec![0.; 2],
+            knots: vec![0., 1.],
             coefficients: vec![0.; 2],
             half_order: 1
         }
