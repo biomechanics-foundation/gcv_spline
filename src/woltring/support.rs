@@ -1,3 +1,5 @@
+use std::{error::Error, fmt};
+
 #[derive(Debug)]
 pub enum FittingError {
     NotEnoughKnotsForOrder(String),
@@ -5,6 +7,13 @@ pub enum FittingError {
     KnotsNotStrictlyIncreasing(String),
     InsufficientKnots(String),
     MatrixMismatch(String),
+}
+
+impl Error for FittingError {}
+impl fmt::Display for FittingError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "FittingError: {:?}", self)
+    }
 }
 
 pub(crate) fn check_order(half_order: usize, num_knots: usize) -> Result<(), FittingError> {
