@@ -1,6 +1,6 @@
 [package]
 name = "gcv_spline"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Spencer T. Williams <stwilliamsmail@gmail.com>"]
 edition = "2021"
 categories = ["science", "mathematics", "science::robotics"]
