@@ -72,9 +72,11 @@ impl<T: Float> GcvSpline<T> {
 
     /// Evaluates a derivative of a given order at a single point.
     pub fn point_derivative(&self, point: T, derivative_order: usize) -> T {
-        //let end = self.knots.last().expect("Time cannot be empty");
-        //let start = self.knots.first().expect("Time cannot be empty");
-        let knot_guess: usize = 0;//((point - *start) / (end.clone() - start.clone()) * T::from(self.knots.len()).expect("Cannot convert to type from usize")) as usize; //.to_usize().expect("Cannot convert from type to usize");
+        let end = self.knots.last().expect("Time cannot be empty");
+        let start = self.knots.first().expect("Time cannot be empty");
+        let knot_guess = ((point - *start) / (end.clone() - start.clone()) * T::from(self.knots.len())
+            .expect("Cannot convert to type from usize"))
+            .to_usize().expect("Cannot convert from type to usize");
 
         evaluate_spline(derivative_order, self.half_order, point, &self.knots, &self.coefficients, knot_guess)
     }
