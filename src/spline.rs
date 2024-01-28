@@ -70,11 +70,7 @@ impl<T: Float> GcvSpline<T> {
 
     /// Evaluates a GCV spline at a set of points.
     pub fn points(&self, points: &Vec<T>) -> Vec<T> {
-        let mut result = vec![T::from(0.).expect("Cannot convert to type from f64"); points.len()];
-        for i in 0 .. points.len() {
-            result[i] = self.single_point(points[i]);
-        }
-        result
+        points.iter().map(|point| self.single_point(*point)).collect()
     }
 
     /// Evaluates a derivative of a given order at a single point.
@@ -90,11 +86,7 @@ impl<T: Float> GcvSpline<T> {
 
     /// Evaluates a derivative of a given order at a set of points.
     pub fn derivative(&self, points: &Vec<T>, derivative_order: usize) -> Vec<T> {
-        let mut result = vec![T::from(0.).expect("Cannot convert to type from f64"); points.len()];
-        for i in 0 .. points.len() {
-            result[i] = self.point_derivative(points[i], derivative_order);
-        }
-        result
+        points.iter().map(|point| self.point_derivative(*point, derivative_order)).collect()
     }
 
     /// Evaluates the first derivative at a set of points.
