@@ -1,20 +1,21 @@
+use num_traits::Float;
 use crate::woltring::search::find_knot_interval;
 
-pub(crate) fn evaluate_spline(derivative_order: usize, half_order: usize, point: f64, knots: &Vec<f64>,
-                       coefficients: &Vec<f64>, knot_guess: usize) -> f64 {
+pub(crate) fn evaluate_spline<T: Float>(derivative_order: usize, half_order: usize, point: T, knots: &Vec<T>,
+                       coefficients: &Vec<T>, knot_guess: usize) -> T {
     let num_knots = knots.len();
 
     // Derivatives of order >= 2 * half_order are always zero
     let order = half_order as i32 * 2 - derivative_order as i32;
     if order < 1 {
-        return 0.0;
+        return T::from(0.).expect("Cannot convert to type from f64");
     }
 
     // Search for interval value
     let knot_interval = find_knot_interval(&knots, point, knot_guess);
 
     // Initialize parameters and first row of B-spline coefficients tableau
-    let mut tableau = vec![0.0; 2 * half_order];
+    let mut tableau = vec![T::from(0.).expect("Cannot convert to type from f64"); 2 * half_order];
     let mut lower_index = knot_interval as i32 + 1;
     let upper_index = knot_interval as i32 + half_order as i32 * 2;
     let mut inner_index = num_knots - 2 * half_order;
@@ -23,7 +24,7 @@ pub(crate) fn evaluate_spline(derivative_order: usize, half_order: usize, point:
         if index >= half_order as i32 + 1 && index <= num_knots as i32 + half_order as i32 {
             tableau[(index - knot_interval as i32 - 1) as usize] = coefficients[(index - half_order as i32 - 1) as usize];
         } else {
-            tableau[(index - knot_interval as i32 - 1) as usize] = 0.0;
+            tableau[(index - knot_interval as i32 - 1) as usize] = T::from(0.).expect("Cannot convert to type from f64");
         }
     }
 
@@ -51,7 +52,7 @@ pub(crate) fn evaluate_spline(derivative_order: usize, half_order: usize, point:
                 if der_index as i32 + 1 <= index_bound {
                     for _ in der_index as i32 + 1 ..= index_bound {
                         idx -= 1;
-                        tableau[idx - 1] = -1.0 * tableau[idx - 2];
+                        tableau[idx - 1] = -T::from(1.).expect("Cannot convert to type from f64") * tableau[idx - 2];
                     }
                 }
             }
@@ -113,7 +114,8 @@ pub(crate) fn evaluate_spline(derivative_order: usize, half_order: usize, point:
     // Multiply with factorial of derivative order > 0
     if derivative_order > 0 {
         for idx in order ..= 2 * half_order as i32 - 1 {
-            solution *= idx as f64;
+            let index = idx as usize;
+            solution = solution * T::from(index).expect("Cannot convert to type from usize");
         }
     }
 

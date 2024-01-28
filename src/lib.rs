@@ -12,8 +12,10 @@
 //! use gcv_spline::GcvSpline;
 //!
 //! // Points describe the function y = x**2
-//! let time = vec![0., 1., 3., 4., 5., 6.];
-//! let values = vec![0., 1., 9., 16., 25., 36.];
+//! // Note that explicit typing is required when using literals
+//! // to facilitate generic type support in gcv_spline
+//! let time: Vec<f64> = vec![0., 1., 3., 4., 5., 6.];
+//! let values: Vec<f64> = vec![0., 1., 9., 16., 25., 36.];
 //!
 //! let spline = GcvSpline::from_data(&time, &values).unwrap();
 //! // Interpolate at a missing point.
@@ -28,7 +30,6 @@
 
 pub mod spline;
 pub mod woltring;
-
 pub use crate::spline::GcvSpline;
 pub use crate::woltring::support::FittingError;
 
@@ -72,7 +73,7 @@ mod tests {
 
     #[test]
     fn test_default() {
-        let spline = GcvSpline::new();
+        let spline = GcvSpline::<f32>::new();
         assert_eq!(spline.knots(), vec![0., 1.]);
     }
 }
