@@ -12,7 +12,9 @@
 //! use gcv_spline::GcvSpline;
 //!
 //! // Points describe the function y = x**2
-//! let time = vec![0., 1., 3., 4., 5., 6.];
+//! // Note that explicit typing is required when using literals
+//! // to facilitate generic type support in gcv_spline
+//! let time: Vec<f64> = vec![0., 1., 3., 4., 5., 6.];
 //! let values = vec![0., 1., 9., 16., 25., 36.];
 //!
 //! let spline = GcvSpline::from_data(&time, &values).unwrap();
@@ -28,7 +30,6 @@
 
 pub mod spline;
 pub mod woltring;
-
 pub use crate::spline::GcvSpline;
 pub use crate::woltring::support::FittingError;
 
@@ -72,7 +73,23 @@ mod tests {
 
     #[test]
     fn test_default() {
-        let spline = GcvSpline::new();
+        let spline = GcvSpline::<f32>::new();
         assert_eq!(spline.knots(), vec![0., 1.]);
+    }
+
+    #[test]
+    fn test_multiple_evaluations() {
+        let time: Vec<f64> = vec![0., 1., 3., 4., 5., 6.];
+        let values = vec![0., 1., 9., 16., 25., 36.];
+
+        let spline = GcvSpline::from_data(&time, &values).unwrap();
+        let interpolated = spline.points(&vec![2., 3.5, 5.]);
+        let derivatives = spline.derivative(&vec![2., 3.5, 5.], 1);
+        assert!((interpolated[0] - 2. * 2.).abs() < 1e-12);
+        assert!((interpolated[1] - 3.5 * 3.5).abs() < 1e-12);
+        assert!((interpolated[2] - 5. * 5.).abs() < 1e-12);
+        assert!((derivatives[0] - 2. * 2.).abs() < 1e-12);
+        assert!((derivatives[1] - 2. * 3.5).abs() < 1e-12);
+        assert!((derivatives[2] - 2. * 5.).abs() < 1e-12);
     }
 }

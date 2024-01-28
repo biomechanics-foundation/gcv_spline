@@ -1,6 +1,8 @@
+use num_traits::Float;
 use crate::woltring::support::{check_increasing, check_order, FittingError};
 
-pub(crate) fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<f64>, f64), FittingError> {
+pub(crate) fn create_basis<T: Float>(half_order: usize, knots: &Vec<T>)
+    -> Result<(Vec<T>, T), FittingError> {
     let num_knots = knots.len();
     check_increasing(knots)?;
     check_order(half_order, num_knots)?;
@@ -9,19 +11,23 @@ pub(crate) fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<f
 
     // Linear case (half order and spline order = 1)
     if half_order == 1 {
-        return Ok((vec![1.0; num_knots], 1.0));
+        return Ok((vec![T::from(1.).expect("Cannot convert to type from f64"); num_knots],
+                   T::from(1.).expect("Cannot convert to type from f64")));
     }
 
-    let mut spline_tableau = vec![0.0; num_knots * spline_order];
+    let mut spline_tableau =
+        vec![T::from(0.).expect("Cannot convert to type from f64"); num_knots * spline_order];
     // General case
     for knot_index in 1 ..= num_knots {
-        let mut working_vec = vec![0.0; 2 * half_order];
+        let mut working_vec =
+            vec![T::from(0.).expect("Cannot convert to type from f64"); 2 * half_order];
 
         // First row
         if knot_index != 1 && knot_index != num_knots {
-            working_vec[2 * half_order - 2] = 1.0 / (knots[knot_index] - knots[knot_index - 2]);
+            working_vec[2 * half_order - 2] = T::from(1.).expect("Cannot convert to type from f64")
+                / (knots[knot_index] - knots[knot_index - 2]);
         } else {
-            working_vec[2 * half_order - 2] = 1.0;
+            working_vec[2 * half_order - 2] = T::from(1.).expect("Cannot convert to type from f64");
         }
 
         // Further rows
@@ -41,7 +47,6 @@ pub(crate) fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<f
                 }
             }
 
-            //println!("{}, {}", knot_index, tableau_index);
             let lower_bound: i32;
             if knot_index as i32 - tableau_index as i32 + 1 < 0 {
                 lower_bound = 1;
@@ -89,7 +94,15 @@ pub(crate) fn create_basis(half_order: usize, knots: &Vec<f64>) -> Result<(Vec<f
         }
     }
 
-    let basis_l1_norm: f64 = spline_tableau.iter().map(|element| element.abs()).sum::<f64>() / num_knots as f64;
+    let abs_vec = spline_tableau.iter().map(|element| element.abs()).collect::<Vec<T>>();
+    let mut abs_iter = abs_vec.iter();
+
+    let mut basis_l1_norm = T::from(0.).expect("Cannot convert to type from f64");
+
+    while let Some(item) = abs_iter.next() {
+        basis_l1_norm = basis_l1_norm + item.clone();
+    }
+    basis_l1_norm = basis_l1_norm / T::from(num_knots).expect("Cannot convert to usize from type");
 
     Ok((spline_tableau, basis_l1_norm))
 }
