@@ -29,14 +29,17 @@ pub(crate) fn consume_and_decompose<T: Float>(mut matrix: Vec<T>, half_order: us
                 if inner_limit >= 1 {
                     let mut decomp_upper = matrix[(knot_index - 1) * (half_order * 2 + 1) + outer + half_order];
                     for inner in 1 ..= inner_limit {
-                        decomp_upper = decomp_upper - matrix[(knot_index - 1) * (half_order * 2 + 1) - inner + half_order] *
+                        decomp_upper = decomp_upper
+                            - matrix[(knot_index - 1) * (half_order * 2 + 1) - inner + half_order] *
                             matrix[(knot_index - inner - 1) * (half_order * 2 + 1) + outer + inner + half_order];
-                        decomp_lower = decomp_lower - matrix[(outer + knot_index - 1) * (half_order * 2 + 1) - outer - inner + half_order] *
+                        decomp_lower = decomp_lower
+                            - matrix[(outer + knot_index - 1) * (half_order * 2 + 1) - outer - inner + half_order] *
                             matrix[(knot_index - inner - 1) * (half_order * 2 + 1) + inner + half_order];
                     }
                     matrix[(knot_index - 1) * (half_order * 2 + 1) + outer + half_order] = decomp_upper;
                 }
-                matrix[(knot_index + outer - 1) * (half_order * 2 + 1) - outer + half_order] = decomp_lower / decomp_inner;
+                matrix[(knot_index + outer - 1) * (half_order * 2 + 1) - outer + half_order] =
+                    decomp_lower / decomp_inner;
             }
         }
     }

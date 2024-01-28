@@ -17,13 +17,17 @@ impl<T: Float> GcvSpline<T> {
     /// half-order, error variance, and weights, which are generally applicable. This method should be used in most
     /// cases.
     pub fn from_data(time: &Vec<T>, data: &Vec<T>) -> Result<Self, FittingError> {
-        Self::from_full_parameters(time, data, &vec![T::from(1.).expect("Cannot convert to type from f64"); time.len()], 3, T::from(0.).expect("Cannot convert to type from f64"))
+        Self::from_full_parameters(time, data, &vec![T::from(1.)
+                                                         .expect("Cannot convert to type from f64"); time.len()],
+                                   3, T::from(0.).expect("Cannot convert to type from f64"))
     }
 
     /// Fits a GcvSpline from user-provided time (knots) and data vectors and a half-order. A half-order *m* will
     /// produce a GcvSpline with a degree of 2 * *m* - 1.
     pub fn from_data_and_half_order(time: &Vec<T>, data: &Vec<T>, half_order: usize) -> Result<Self, FittingError> {
-        Self::from_full_parameters(time, data, &vec![T::from(1.).expect("Cannot convert to type from f64"); time.len()], half_order, T::from(0.).expect("Cannot convert to type from f64"))
+        Self::from_full_parameters(time, data, &vec![T::from(1.)
+                                                         .expect("Cannot convert to type from f64"); time.len()],
+                                   half_order, T::from(0.).expect("Cannot convert to type from f64"))
     }
 
     /// Fits a GcvSpline from user-provided time (knots) and data vectors, a half-order, and an error variance.
@@ -32,7 +36,9 @@ impl<T: Float> GcvSpline<T> {
     /// input data before fitting with an error variance of 0 rather than using this type of smoothing.
     pub fn from_data_half_order_and_smoothing(time: &Vec<T>, data: &Vec<T>, half_order: usize, error_variance: T)
         -> Result<Self, FittingError> {
-        Self::from_full_parameters(time, data, &vec![T::from(1.).expect("Cannot convert to type from f64"); time.len()], half_order, error_variance)
+        Self::from_full_parameters(time, data, &vec![T::from(1.)
+                                                         .expect("Cannot convert to type from f64"); time.len()],
+                                   half_order, error_variance)
     }
 
     /// Fits a GcvSpline from user-provided time (knots) and data vectors, a half-order, an error variance, and a
@@ -50,7 +56,8 @@ impl<T: Float> GcvSpline<T> {
     /// Creates a GcvSpline with default values. This does not describe any user-provided data.
     pub fn new() -> Self {
         GcvSpline {
-            knots: vec![T::from(0.).expect("Cannot convert to type from f64"), T::from(1.).expect("Cannot convert to type from f64")],
+            knots: vec![T::from(0.).expect("Cannot convert to type from f64"),
+                        T::from(1.).expect("Cannot convert to type from f64")],
             coefficients: vec![T::from(0.).expect("Cannot convert to type from f64"); 2],
             half_order: 1
         }

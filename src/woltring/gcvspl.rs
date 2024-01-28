@@ -29,7 +29,8 @@ pub(crate) fn fit_gcv_spline<T: Float>(knots: &Vec<T>, data: &Vec<T>, weight_fac
     // Store temporary GCV function values
     let (mut gcv_f1, mut gcv_f2, mut gcv_f3, mut gcv_f4): (T, T, T, T);
     let (mut smoothing_1, mut smoothing_2, mut smoothing_3, mut smoothing_4): (T, T, T, T);
-    let mut traced_matrix = vec![T::from(0.).expect("Cannot convert to type from f64"); weighted_matrix.len()];
+    let mut traced_matrix = vec![T::from(0.).expect("Cannot convert to type from f64");
+                                 weighted_matrix.len()];
     // Zero variance case
     if error_variance == T::from(0.).expect("Cannot convert to type from f64") {
         smoothing_1 = T::from(0.).expect("Cannot convert to type from f64");
@@ -72,7 +73,6 @@ pub(crate) fn fit_gcv_spline<T: Float>(knots: &Vec<T>, data: &Vec<T>, weight_fac
                 if stats[3] >= T::from(1.).expect("Cannot convert to type from f64") {
                     solved = true;
                 } else {
-                    // smoothing_2 = smoothing_3;
                     gcv_f2 = gcv_f3;
                     smoothing_3 = smoothing_3 * smoothing_ratio;
                     gcv_f3 = fit_spline_coefficients_with_stats(
@@ -83,7 +83,6 @@ pub(crate) fn fit_gcv_spline<T: Float>(knots: &Vec<T>, data: &Vec<T>, weight_fac
             }
             if !solved {
                 smoothing_2 = smoothing_3;
-                // gcv_f2 = gcv_f3;
                 let mut alpha = (smoothing_2 - smoothing_1) / tau;
                 smoothing_4 = smoothing_1 + alpha;
                 smoothing_3 = smoothing_2 - alpha;
@@ -98,9 +97,9 @@ pub(crate) fn fit_gcv_spline<T: Float>(knots: &Vec<T>, data: &Vec<T>, weight_fac
                 while !solved {
                     if gcv_f3 <= gcv_f4 {
                         smoothing_2 = smoothing_4;
-                        // gcv_f2 = gcv_f4;
                         let error = (smoothing_2 - smoothing_1) / (smoothing_1 + smoothing_2);
-                        if error * error + T::from(1.).expect("Cannot convert to type from f64") == T::from(1.).expect("Cannot convert to type from f64") || error <= tolerance {
+                        if error * error + T::from(1.).expect("Cannot convert to type from f64")
+                            == T::from(1.).expect("Cannot convert to type from f64") || error <= tolerance {
                             solved = true;
                         } else {
                             smoothing_4 = smoothing_3;
@@ -114,23 +113,24 @@ pub(crate) fn fit_gcv_spline<T: Float>(knots: &Vec<T>, data: &Vec<T>, weight_fac
                         }
                     } else {
                         smoothing_1 = smoothing_3;
-                        // gcv_f1 = gcv_f3;
                         let error = (smoothing_2 - smoothing_1) / (smoothing_1 + smoothing_2);
-                        if error * error + T::from(1.).expect("Cannot convert to type from f64") <= T::from(1.).expect("Cannot convert to type from f64") || error <= tolerance {
+                        if error * error + T::from(1.).expect("Cannot convert to type from f64")
+                            <= T::from(1.).expect("Cannot convert to type from f64") || error <= tolerance {
                             solved = true;
                         } else {
                             smoothing_3 = smoothing_4;
                             gcv_f3 = gcv_f4;
                             alpha = alpha / tau;
                             smoothing_4 = smoothing_1 + alpha;
-                            gcv_f4 = fit_spline_coefficients_with_stats(
-                                half_order, &data, &weight_factors, error_variance, smoothing_4, epsilon, &spline_tableau,
+                            gcv_f4 = fit_spline_coefficients_with_stats(half_order, &data, &weight_factors,
+                                error_variance, smoothing_4, epsilon, &spline_tableau,
                                 &weighted_matrix, weighted_matrix_norm, &mut coefficients, &mut stats,
                                 &mut traced_matrix)?;
                         }
                     }
                 }
-                smoothing_1 = T::from(0.5).expect("Cannot convert to type from f64") * (smoothing_1 + smoothing_2);
+                smoothing_1 = T::from(0.5).expect("Cannot convert to type from f64") *
+                    (smoothing_1 + smoothing_2);
                 let _gcv_f1 = fit_spline_coefficients_with_stats(
                     half_order, &data, &weight_factors, error_variance, smoothing_1, epsilon, &spline_tableau,
                     &weighted_matrix, weighted_matrix_norm, &mut coefficients, &mut stats,

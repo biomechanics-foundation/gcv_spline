@@ -15,7 +15,7 @@
 //! // Note that explicit typing is required when using literals
 //! // to facilitate generic type support in gcv_spline
 //! let time: Vec<f64> = vec![0., 1., 3., 4., 5., 6.];
-//! let values: Vec<f64> = vec![0., 1., 9., 16., 25., 36.];
+//! let values = vec![0., 1., 9., 16., 25., 36.];
 //!
 //! let spline = GcvSpline::from_data(&time, &values).unwrap();
 //! // Interpolate at a missing point.

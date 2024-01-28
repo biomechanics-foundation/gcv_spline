@@ -22,9 +22,11 @@ pub(crate) fn evaluate_spline<T: Float>(derivative_order: usize, half_order: usi
 
     for index in lower_index ..= upper_index {
         if index >= half_order as i32 + 1 && index <= num_knots as i32 + half_order as i32 {
-            tableau[(index - knot_interval as i32 - 1) as usize] = coefficients[(index - half_order as i32 - 1) as usize];
+            tableau[(index - knot_interval as i32 - 1) as usize] =
+                coefficients[(index - half_order as i32 - 1) as usize];
         } else {
-            tableau[(index - knot_interval as i32 - 1) as usize] = T::from(0.).expect("Cannot convert to type from f64");
+            tableau[(index - knot_interval as i32 - 1) as usize] =
+                T::from(0.).expect("Cannot convert to type from f64");
         }
     }
 
@@ -52,7 +54,8 @@ pub(crate) fn evaluate_spline<T: Float>(derivative_order: usize, half_order: usi
                 if der_index as i32 + 1 <= index_bound {
                     for _ in der_index as i32 + 1 ..= index_bound {
                         idx -= 1;
-                        tableau[idx - 1] = -T::from(1.).expect("Cannot convert to type from f64") * tableau[idx - 2];
+                        tableau[idx - 1] = -T::from(1.).expect("Cannot convert to type from f64")
+                            * tableau[idx - 2];
                     }
                 }
             }
@@ -74,14 +77,14 @@ pub(crate) fn evaluate_spline<T: Float>(derivative_order: usize, half_order: usi
             // Right hand splines
             if knot_interval >= order_idx + 1 {
                 for _ in order_idx + 1 ..= knot_interval {
-                    tableau[working_idx - 1] = tableau[working_idx - 2] + (point - knots[knot_idx - 1]) * tableau[working_idx - 1];
+                    tableau[working_idx - 1] = tableau[working_idx - 2] + (point - knots[knot_idx - 1])
+                        * tableau[working_idx - 1];
                     knot_idx -= 1;
                     working_idx -= 1;
                 }
             }
 
             // Middle B-splines
-            //lk1i = knot_interval - order + 1 + idx
             let idx_1 = 1.max(knot_interval as i32 - order + 1 + idx as i32);
             let idx_2 = knot_interval.min(order_idx) as i32;
             if idx_1 <= idx_2 {

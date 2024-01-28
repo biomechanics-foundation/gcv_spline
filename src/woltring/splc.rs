@@ -19,7 +19,8 @@ pub(crate) fn fit_spline_coefficients_with_stats<T: Float>(half_order: usize, da
 
     let mut smoothing = real_smoothing;
     let mut stats = vec![T::from(0.).expect("Cannot convert to type from f64"); 6];
-    let mut inverted_weighted_matrix = vec![T::from(0.).expect("Cannot convert to type from f64"); weighted_tableau.len()];
+    let mut inverted_weighted_matrix = vec![T::from(0.).expect("Cannot convert to type from f64");
+                                            weighted_tableau.len()];
     let splc: T;
 
     stats[3] = real_smoothing / (T::from(1.).expect("Cannot convert to type from f64") + real_smoothing);
@@ -42,8 +43,10 @@ pub(crate) fn fit_spline_coefficients_with_stats<T: Float>(half_order: usize, da
         let upper_bound = half_order.min(num_knots - knot_index) as i32;
 
         for inner in lower_bound ..= upper_bound {
-            let index = ((knot_index as i32 - 1) * (half_order as i32 * 2 + 1) + inner + half_order as i32) as usize;
-            let index_b = ((knot_index as i32 - 1) * (half_order as i32 * 2 - 1) + inner + half_order as i32 - 1) as usize;
+            let index = ((knot_index as i32 - 1) * (half_order as i32 * 2 + 1) + inner +
+                half_order as i32) as usize;
+            let index_b = ((knot_index as i32 - 1) * (half_order as i32 * 2 - 1) + inner +
+                half_order as i32 - 1) as usize;
             if inner.abs() as usize == half_order {
                 inverted_weighted_matrix[index] = smoothing * weighted_tableau[index];
             } else {
@@ -69,7 +72,8 @@ pub(crate) fn fit_spline_coefficients_with_stats<T: Float>(half_order: usize, da
         let upper_bound = (half_order - 1).min(num_knots - knot_index) as i32;
 
         for inner in lower_bound ..= upper_bound {
-            let index = ((knot_index as i32 - 1) * (half_order as i32 * 2 - 1) + inner + half_order as i32 - 1) as usize;
+            let index = ((knot_index as i32 - 1) *
+                (half_order as i32 * 2 - 1) + inner + half_order as i32 - 1) as usize;
             point = point + (spline_tableau[index]
                 * coefficients[(knot_index as i32 + inner - 1) as usize]);
         }
@@ -88,7 +92,8 @@ pub(crate) fn fit_spline_coefficients_with_stats<T: Float>(half_order: usize, da
         splc = stats[0];
     } else {
         // Known variance: estimated mean squared error
-        stats[4] = residual - variance * (T::from(2.).expect("Cannot convert to type from f64") * normalized_trace - T::from(1.).expect("Cannot convert to type from f64"));
+        stats[4] = residual - variance * (T::from(2.).expect("Cannot convert to type from f64")
+            * normalized_trace - T::from(1.).expect("Cannot convert to type from f64"));
         splc = stats[4];
     }
 

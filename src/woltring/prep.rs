@@ -8,7 +8,8 @@ pub(crate) fn create_weighted_matrix<T: Float>(half_order: usize, knots: &Vec<T>
     check_order(half_order, num_knots)?;
     check_vector_length(weights_diagonal, num_knots)?;
 
-    let mut weighted_matrix = vec![T::from(0.).expect("Cannot convert to type from f64"); ((2 * half_order) + 1) * num_knots];
+    let mut weighted_matrix = vec![T::from(0.).expect("Cannot convert to type from f64");
+                                   ((2 * half_order) + 1) * num_knots];
 
     // Calculate factor
     let mut factor_1 = T::from(-1.).expect("Cannot convert to type from f64");
@@ -74,7 +75,6 @@ pub(crate) fn create_weighted_matrix<T: Float>(half_order: usize, knots: &Vec<T>
             matrix_factor = matrix_factor / (knot_value - knots[idx - 1]);
         }
         weighted_matrix[matrix_index - 1] = matrix_factor;
-        // matrix_index += half_order * 2;
         order_index += increment;
     }
 
@@ -91,6 +91,5 @@ pub(crate) fn create_weighted_matrix<T: Float>(half_order: usize, knots: &Vec<T>
     }
     matrix_norm = matrix_norm / T::from(num_knots).expect("Cannot convert to type from usize");
 
-    // Placeholder return
     Ok((weighted_matrix, matrix_norm))
 }
